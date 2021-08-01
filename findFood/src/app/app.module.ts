@@ -1,28 +1,34 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+// Angular default modules
+import { NgModule } from '@angular/core'
+import { BrowserModule } from '@angular/platform-browser'
+import { HttpClientModule } from '@angular/common/http'
+import { AppRoutingModule } from './app-routing.module'
+import { AppComponent } from './app.component'
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { FormsModule, ReactiveFormsModule } from '@angular/forms'
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+// Firebase
+import { AngularFireModule } from '@angular/fire'
+import { AngularFirestoreModule } from '@angular/fire/firestore'
+import { AngularFireStorageModule } from '@angular/fire/storage'
 
-// material
-import { MatCardModule } from '@angular/material/card';
-import { RestaurantesComponent } from './restaurantes/restaurantes.component';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FiltroRestaurantePipe } from './shared/filtro-restaurante.pipe';
-// import { RestauranteComponent } from './restaurante/restaurante.component';
-// import { NovoRestauranteComponent } from './novo-restaurante/novo-restaurante.component';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { HttpClientModule } from '@angular/common/http';
-import { RestauranteComponent } from './restaurante/restaurante.component';
-import { NovoRestauranteComponent } from './novo-restaurante/novo-restaurante.component';
+// Material
+import { MatCardModule } from '@angular/material/card'
+import { MatButtonModule } from '@angular/material/button'
+import { MatIconModule } from '@angular/material/icon'
+import { MatMenuModule } from '@angular/material/menu'
+import { MatFormFieldModule } from '@angular/material/form-field'
+import { MatInputModule } from '@angular/material/input'
+import { MatDialogModule } from '@angular/material/dialog'
+import { MatSelectModule } from '@angular/material/select'
+import { MatSnackBarModule } from '@angular/material/snack-bar'
+
+// Application
+import { RestaurantesComponent } from './restaurantes/restaurantes.component'
+import { RestauranteComponent } from './restaurante/restaurante.component'
+import { NovoRestauranteComponent } from './novo-restaurante/novo-restaurante.component'
+import { FiltroRestaurantePipe } from './shared/filtro-restaurante.pipe'
+import { environment } from 'src/environments/environment'
 
 @NgModule({
   declarations: [
@@ -34,21 +40,29 @@ import { NovoRestauranteComponent } from './novo-restaurante/novo-restaurante.co
     FiltroRestaurantePipe
   ],
   imports: [
+    // Angular default
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     BrowserAnimationsModule,
+    FormsModule,
+    ReactiveFormsModule,
+
+    // Material
     MatCardModule,
     MatButtonModule,
     MatIconModule,
     MatMenuModule,
     MatFormFieldModule,
     MatInputModule,
-    FormsModule,
-    ReactiveFormsModule,
     MatDialogModule,
     MatSelectModule,
     MatSnackBarModule,
-    HttpClientModule
+
+    // Firebase
+    AngularFirestoreModule,
+    AngularFireStorageModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig)
   ],
   providers: [],
   bootstrap: [AppComponent]

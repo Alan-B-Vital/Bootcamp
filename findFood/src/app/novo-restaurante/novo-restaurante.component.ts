@@ -1,8 +1,8 @@
-
-import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http'
+import { Component, Inject, OnInit } from '@angular/core'
+import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
+import { RestaurantesService } from '../shared/restaurantes.service'
 
 @Component({
   selector: 'app-novo-restaurante',
@@ -10,85 +10,91 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./novo-restaurante.component.scss']
 })
 export class NovoRestauranteComponent implements OnInit {
+  selectedFile: any
+  currentFileUpload: any
+  siglas: any[] = []
+  cidades: any[] = []
 
-  selectedFile: any;
-  currentFileUpload: any;
-  siglas: Array<any> = [];
-  cidades: Array<any> = [];
-
-  rating: number = 3;
-  starCount: number = 5;
-  ratingArr: Array<number> = [];
+  rating: number = 3
+  starCount: number = 5
+  ratingArr: number[] = []
 
   novoRestaurante = new FormGroup({
     nome: new FormControl('', Validators.required),
     estado: new FormControl('', Validators.required),
     cidade: new FormControl('', Validators.required),
-    descricao: new FormControl('', Validators.required),
-  });
+    descricao: new FormControl('', Validators.required)
+  })
 
-  constructor(
+  constructor (
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private _http: HttpClient,
-    public dialogRef: MatDialogRef<NovoRestauranteComponent>) { }
+    private readonly _http: HttpClient,
+    public readonly dialogRef: MatDialogRef<NovoRestauranteComponent>,
+    private readonly _restaurantesService: RestaurantesService
+  ) { }
 
-  ngOnInit(): void {
-    this.data = this.data.siglas;
+  ngOnInit (): void {
+    this.data = this.data.siglas
 
     for (let index = 0; index < this.starCount; index++) {
-      this.ratingArr.push(index);
+      this.ratingArr.push(index)
     }
   }
 
-  onClick(rating: number) {
-    this.rating = rating;
-    return false;
+  onClick (rating: number): boolean {
+    this.rating = rating
+    return false
   }
 
-  showIcon(index: number) {
+  showIcon (index: number): string {
     if (this.rating >= index + 1) {
-      return 'star';
+      return 'star'
     } else {
-      return 'star_border';
+      return 'star_border'
     }
   }
 
-  onFileSelect(e: any) {
-    if (e.target.files && e.target.files[0]) {
-      this.currentFileUpload = e.target.files[0];
+  onFileSelect (e: any): void {
+    if (e?.target?.files[0] !== null) {
+      this.currentFileUpload = e.target.files[0]
       const reader = new FileReader()
       reader.readAsDataURL(e.target.files[0])
       reader.onload = (ev) => {
-        if (ev.target) {
-          this.selectedFile = ev.target.result;
+        if (ev.target !== null) {
+          this.selectedFile = ev.target.result
         }
       }
     }
   }
 
-  buscaCidade(estado: any) {
-    this.cidades = [];
-    this._http.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${estado.sigla}/distritos`)
+  buscaCidade (estado: any): any {
+    this.cidades = []
+    this._http.get(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${String(estado.sigla)}/distritos`)
       .subscribe((cidades: any) => {
         cidades = cidades.sort((a: any, b: any) => (a.nome > b.nome) ? 1 : -1)
         cidades.forEach((cidade: any) => {
-          this.cidades.push(cidade.nome);
-        });
-      });
+          this.cidades.push(cidade.nome)
+        })
+      })
   }
 
-  salvarRestaurante() {
+  salvarRestaurante (): any {
     const avaliacao = {
       nome: this.novoRestaurante.value.nome,
       estado: this.novoRestaurante.value.estado,
       cidade: this.novoRestaurante.value.cidade,
       descricao: this.novoRestaurante.value.descricao,
-      autorRestaurante: this.data.usuario,
+      // autorRestaurante: this.data.usuario,
       criadoEm: new Date(),
       estrelas: this.rating
     }
 
-    this.dialogRef.close(avaliacao);
-  }
+    if (this.selectedFile !== null) {
+      this._restaurantesService.pushFileToStorage(avaliacao, this.currentFileUpload)
+    } else {
+      alert('Parece que não foi inserido nenhum arquivo de imagem.')
+    }
 
+    this.dialogRef.close()
+  }
 }

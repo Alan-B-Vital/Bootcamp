@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "findfood-46111": {
+      "hosting": {
+        "findFood": [
+          "findfood-46111"
+        ]
+      }
+    }
+  }
+}
