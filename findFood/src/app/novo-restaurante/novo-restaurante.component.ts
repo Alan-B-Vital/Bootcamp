@@ -18,6 +18,7 @@ export class NovoRestauranteComponent implements OnInit {
   rating: number = 3
   starCount: number = 5
   ratingArr: number[] = []
+  usuarioLogado: any
 
   novoRestaurante = new FormGroup({
     nome: new FormControl('', Validators.required),
@@ -34,6 +35,7 @@ export class NovoRestauranteComponent implements OnInit {
   ) { }
 
   ngOnInit (): void {
+    this.usuarioLogado = this.data.usuario
     this.data = this.data.siglas
 
     for (let index = 0; index < this.starCount; index++) {
@@ -79,12 +81,14 @@ export class NovoRestauranteComponent implements OnInit {
   }
 
   salvarRestaurante (): any {
+    console.log('aaaaaaaaaaaaaaaa')
+    console.log(this.usuarioLogado)
     const avaliacao = {
       nome: this.novoRestaurante.value.nome,
       estado: this.novoRestaurante.value.estado,
       cidade: this.novoRestaurante.value.cidade,
       descricao: this.novoRestaurante.value.descricao,
-      // autorRestaurante: this.data.usuario,
+      autorRestaurante: this.usuarioLogado,
       criadoEm: new Date(),
       estrelas: this.rating
     }

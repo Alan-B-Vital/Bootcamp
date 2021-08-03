@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { RestauranteComponent } from '../restaurante/restaurante.component'
 import { RestaurantesService } from '../shared/restaurantes.service'
+import { AuthService } from '../auth/auth.service'
 
 @Component({
   selector: 'app-restaurantes',
@@ -16,10 +17,13 @@ export class RestaurantesComponent implements OnInit {
 
   restaurantes: any[] = []
 
+  usuarioLogado: any
+
   constructor (
     private readonly _http: HttpClient,
     private readonly dialog: MatDialog,
-    private readonly _restaurantesService: RestaurantesService
+    private readonly _restaurantesService: RestaurantesService,
+    private readonly _authService: AuthService
   ) { }
 
   ngOnInit (): void {
@@ -34,6 +38,11 @@ export class RestaurantesComponent implements OnInit {
         })
       })
     })
+
+    this._authService.user
+      .subscribe(userInfos => {
+        this.usuarioLogado = userInfos
+      })
   }
 
   async listarRestaurantes (): Promise<void> { // pega lsita de restaurantes do firestore
@@ -49,7 +58,7 @@ export class RestaurantesComponent implements OnInit {
       width: '80%',
       height: 'max-content',
       data: {
-        usuario: '',
+        usuario: this.usuarioLogado,
         siglas: this.siglas
       }
     })
@@ -69,6 +78,6 @@ export class RestaurantesComponent implements OnInit {
   }
 
   sair (): void {
-    console.log('até mais')
+    this._authService.sair().catch(() => {})
   }
 }

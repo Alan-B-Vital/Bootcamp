@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core'
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
+import { AuthService } from '../auth/auth.service'
 import { RestaurantesService } from '../shared/restaurantes.service'
 
 @Component({
@@ -15,6 +16,7 @@ export class RestauranteComponent implements OnInit {
   rating: number = 5
   starCount: number = 5
 
+  usuarioLogado: any
   usuario_rating: number = 3
   usuario_ratingArr: number[] = []
   comentarios_usuarios_ratingArr: number[] = []
@@ -27,7 +29,8 @@ export class RestauranteComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public restaurante: any,
     public dialog: MatDialog,
     public snackBar: MatSnackBar,
-    private readonly _restauranteService: RestaurantesService
+    private readonly _restauranteService: RestaurantesService,
+    private readonly _authService: AuthService
   ) { }
 
   ngOnInit (): void {
@@ -44,6 +47,10 @@ export class RestauranteComponent implements OnInit {
     }
 
     this.listarComentarios(this.restaurante.estrelas)
+    this._authService.user
+      .subscribe(userInfos => {
+        this.usuarioLogado = userInfos
+      })
   }
 
   showIcon (contagem: number, index: number): string {
@@ -61,16 +68,16 @@ export class RestauranteComponent implements OnInit {
 
   enviarComentario (): void {
     this._restauranteService
-      .criaComentarioDousuario(this.restaurante.id, 'idprovisorio', {
+      .criaComentarioDousuario(this.restaurante.id, this.usuarioLogado.uid, {
         comentario: this.comentario_usuario,
         estrelas: this.usuario_rating,
         comentadoEm: new Date(),
         autor: {
-          nome: 'bootcamper',
-          foto: '',
-          uid: 'idprovisorio'
+          nome: this.usuarioLogado.displayName,
+          foto: this.usuarioLogado.photoURL,
+          uid: this.usuarioLogado.uid
         }
-      }).then(async () => { this.comentario_usuario = '' }).catch()
+      }).then(async () => { this.comentario_usuario = '' }).catch((err) => console.log(err))
   }
 
   listarComentarios (param: number): any {

@@ -29,6 +29,13 @@ import { RestauranteComponent } from './restaurante/restaurante.component'
 import { NovoRestauranteComponent } from './novo-restaurante/novo-restaurante.component'
 import { FiltroRestaurantePipe } from './shared/filtro-restaurante.pipe'
 import { environment } from 'src/environments/environment'
+import { LoginPageComponent } from './login-page/login-page.component'
+
+// Translation
+import { registerLocaleData } from '@angular/common'
+import localeBr from '@angular/common/locales/pt'
+
+registerLocaleData(localeBr, 'pt')
 
 @NgModule({
   declarations: [
@@ -37,7 +44,8 @@ import { environment } from 'src/environments/environment'
     RestaurantesComponent,
     RestauranteComponent,
     NovoRestauranteComponent,
-    FiltroRestaurantePipe
+    FiltroRestaurantePipe,
+    LoginPageComponent
   ],
   imports: [
     // Angular default
